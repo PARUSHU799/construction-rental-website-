@@ -1,0 +1,589 @@
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--orange:#D85A30;--orange-light:#FAECE7;--orange-dark:#993C1D;--steel:#185FA5;--steel-light:#E6F1FB;--ink:var(--color-text-primary);--muted:var(--color-text-secondary);--surface:var(--color-background-primary);--surface2:var(--color-background-secondary);--border:var(--color-border-tertiary)}
+body{font-family:var(--font-sans);font-size:14px;color:var(--ink);background:var(--surface2)}
+.app{display:flex;flex-direction:column;min-height:600px}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface);border-bottom:0.5px solid var(--border);position:sticky;top:0;z-index:100}
+.logo{font-size:15px;font-weight:500;color:var(--orange);display:flex;align-items:center;gap:6px}
+.nav-pills{display:flex;gap:4px;flex-wrap:wrap}
+.pill{padding:5px 10px;border-radius:20px;border:0.5px solid var(--border);font-size:12px;cursor:pointer;color:var(--muted);background:var(--surface);transition:all .15s}
+.pill:hover{background:var(--surface2);color:var(--ink)}
+.pill.active{background:var(--orange);color:#fff;border-color:var(--orange)}
+.pill.admin-pill.active{background:var(--steel);border-color:var(--steel)}
+.mode-btn{padding:5px 12px;border-radius:20px;font-size:12px;border:0.5px solid var(--border);cursor:pointer;background:var(--surface);color:var(--muted)}
+.mode-btn.active{background:#2C2C2A;color:#fff;border-color:#2C2C2A}
+.page{display:none;padding:16px}
+.page.active{display:block}
+.section-title{font-size:18px;font-weight:500;margin-bottom:12px;color:var(--ink)}
+.card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--border-radius-lg);padding:14px}
+
+/* Fully Responsive Grids for System and Phone */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:10px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:8px}
+
+/* Movable Image Slider */
+.slider-container{position:relative;margin-bottom:16px}
+.slider-track{display:flex;gap:12px;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;padding:4px 0}
+.slider-track::-webkit-scrollbar{display:none}
+
+/* Slider cards take up most of mobile screen width, max out at 300px on desktop */
+.slide-card{flex:0 0 85vw;max-width:300px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--border-radius-lg);overflow:hidden;cursor:pointer;transition:all .2s;user-select:none}
+.slide-card:hover{border-color:var(--orange);transform:translateY(-2px);box-shadow:0 4px 12px rgba(216,90,48,.12)}
+
+/* Image aspect ratio set to dynamically fill full width */
+.slide-img{width:100%;aspect-ratio:4/3;height:auto;object-fit:cover;background:var(--surface2)}
+
+.slider-arrow{position:absolute;top:42%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:var(--surface);border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;z-index:10;color:var(--ink);transition:all .15s}
+.slider-arrow:hover{background:var(--orange);color:#fff;border-color:var(--orange)}
+.slider-arrow.left{left:-10px}
+.slider-arrow.right{right:-10px}
+
+/* Unified, Pro-Sized Equipment Image Containers */
+.equip-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--border-radius-lg);overflow:hidden;cursor:pointer;transition:all .2s;display:flex;flex-direction:column}
+.equip-card:hover{border-color:var(--orange);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.06)}
+
+/* Made Equipment Grid Images Full Size and Responsive */
+.equip-img{width:100%;aspect-ratio:4/3;height:auto;background:#111;position:relative;overflow:hidden;border-bottom:0.5px solid var(--border)}
+.equip-img img{width:100%;height:100%;object-fit:cover;object-position:center;transition:transform .3s ease}
+.equip-card:hover .equip-img img{transform:scale(1.06)}
+
+.hero{background:linear-gradient(135deg,#1a1a18 0%,#3a2010 100%);border-radius:var(--border-radius-lg);padding:36px 28px;margin-bottom:16px;position:relative;overflow:hidden}
+.hero h1{font-size:24px;font-weight:500;color:#fff;margin-bottom:8px;line-height:1.3}
+.hero p{color:rgba(255,255,255,.65);font-size:13px;margin-bottom:20px;max-width:360px}
+.btn-primary{background:var(--orange);color:#fff;border:none;padding:10px 18px;border-radius:6px;font-size:13px;cursor:pointer;font-weight:500;width:100%;transition:background .15s}
+.btn-primary:hover{background:var(--orange-dark)}
+.btn-outline{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4);padding:10px 18px;border-radius:6px;font-size:13px;cursor:pointer;transition:border .15s}
+.btn-outline:hover{border-color:#fff}
+.avail-badge{position:absolute;top:10px;right:10px;padding:3px 8px;border-radius:12px;font-size:10px;font-weight:600;z-index:2;box-shadow:0 2px 4px rgba(0,0,0,.2)}
+.avail-badge.available{background:#EAF3DE;color:#3B6D11}
+.avail-badge.rented{background:#FAECE7;color:#993C1D}
+.equip-info{padding:12px;flex:1;display:flex;flex-direction:column;justify-content:space-between}
+.equip-name{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:4px}
+.equip-rate{font-size:13px;color:var(--orange);font-weight:600}
+.equip-model{font-size:11px;color:var(--muted);margin-bottom:8px}
+.stat-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--border-radius-md);padding:12px}
+.stat-num{font-size:22px;font-weight:500;margin-bottom:2px}
+.stat-label{font-size:11px;color:var(--muted)}
+.stat-card.orange .stat-num{color:var(--orange)}
+.stat-card.blue .stat-num{color:var(--steel)}
+.stat-card.green .stat-num{color:#3B6D11}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;padding:8px 10px;color:var(--muted);border-bottom:0.5px solid var(--border);font-weight:500}
+td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:middle}
+.status-pill{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:500;white-space:nowrap}
+.s-active{background:#EAF3DE;color:#3B6D11}
+.s-pending{background:#FAEEDA;color:#854F0B}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:8px 10px;border:0.5px solid var(--border);border-radius:6px;font-size:13px;background:var(--surface);color:var(--ink)}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.btn-sm{padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;border:0.5px solid var(--border);background:var(--surface);color:var(--ink);transition:all .15s}
+.btn-sm:hover{background:var(--surface2)}
+.btn-sm.orange{background:var(--orange);color:#fff;border-color:var(--orange)}
+.btn-sm.orange:hover{background:var(--orange-dark)}
+.btn-sm.blue{background:var(--steel);color:#fff;border-color:var(--steel)}
+.btn-sm.red{background:var(--orange-dark);color:#fff;border-color:var(--orange-dark)}
+.labor-card{display:flex;align-items:center;gap:12px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--border-radius-md);padding:12px}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--steel-light);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.pkg-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--border-radius-lg);padding:18px;text-align:center;display:flex;flex-direction:column;justify-content:space-between}
+.pkg-card.featured{border:2px solid var(--orange)}
+.pkg-duration{font-size:13px;color:var(--muted);margin-bottom:4px;font-weight:500}
+.pkg-price{font-size:24px;font-weight:600;color:var(--orange);margin-bottom:12px}
+.pkg-features{text-align:left;font-size:11px;color:var(--muted);margin-bottom:16px;flex:1}
+.pkg-features li{margin-bottom:6px;list-style:none;padding-left:16px;position:relative}
+.pkg-features li::before{content:'✓';position:absolute;left:0;color:#3B6D11}
+.invoice-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:0.5px solid var(--border);font-size:13px}
+.invoice-total{display:flex;justify-content:space-between;padding:10px 0 0;font-weight:600;font-size:14px;color:var(--orange)}
+.contact-card{display:flex;align-items:flex-start;gap:12px;background:var(--surface);border:0.5px solid var(--border);border-radius:var(--border-radius-md);padding:14px;transition:border .15s}
+.contact-card:hover{border-color:var(--orange)}
+.wapp-btn{display:flex;align-items:center;gap:8px;padding:8px 14px;background:#25D366;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-weight:500;justify-content:center;transition:background .15s}
+.wapp-btn:hover{background:#20ba5a}
+.back-btn{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;cursor:pointer;margin-bottom:14px;padding:4px 8px;border-radius:4px;background:var(--surface)}
+.back-btn:hover{color:var(--ink);background:var(--border)}
+.my-booking-card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--border-radius-md);padding:14px;margin-bottom:10px}
+.mb-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.mb-id{font-size:11px;color:var(--muted);font-family:monospace}
+</style>
+
+<div class="app">
+<div class="topbar">
+  <div class="logo">🏗 HeavyHire</div>
+  <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+    <div class="mode-btn active" onclick="setMode('public',this)">Customer Portal</div>
+    <div class="mode-btn" onclick="setMode('admin',this)">Admin Panel</div>
+  </div>
+</div>
+
+<div id="public-nav" class="topbar" style="padding:8px 16px;gap:4px;flex-wrap:wrap;justify-content:flex-start">
+  <div class="pill active" onclick="showPage('home',this)">Home</div>
+  <div class="pill" onclick="showPage('catalog',this)">Equipment</div>
+  <div class="pill" onclick="showPage('labor',this)">Labor Supply</div>
+  <div class="pill" onclick="showPage('packages',this)">Monthly Plans</div>
+  <div class="pill" onclick="showPage('quote',this)">Get Quote</div>
+  <div class="pill" onclick="showPage('mybookings',this)">My Bookings</div>
+  <div class="pill" onclick="showPage('about',this)">About Us</div>
+  <div class="pill" onclick="showPage('contact',this)">Contact</div>
+</div>
+
+<div id="admin-nav" class="topbar" style="display:none;padding:8px 16px;gap:4px;flex-wrap:wrap;justify-content:flex-start">
+  <div class="pill admin-pill active" onclick="showAdminPage('bookings_admin',this)">Bookings (Live DB)</div>
+  <div class="pill admin-pill" onclick="showAdminPage('inventory',this)">Inventory fleet</div>
+  <div class="pill admin-pill" onclick="showAdminPage('labor_admin',this)">Labor force</div>
+</div>
+
+<div id="page-home" class="page active">
+  <div class="hero">
+    <h1>Heavy Equipment Rental<br>for Hyderabad's Builders</h1>
+    <p>JCBs, Excavators, Cranes, and Mining Compressors — daily, monthly or project-based.</p>
+    <div style="display:flex;gap:10px;max-width:320px">
+      <button class="btn-primary" onclick="showPage('catalog',document.querySelectorAll('#public-nav .pill')[1])">Explore Fleet</button>
+      <button class="btn-outline" onclick="showPage('quote',document.querySelectorAll('#public-nav .pill')[4])">Instant Quote</button>
+    </div>
+  </div>
+
+  <div style="font-size:11px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;display:flex;justify-content:space-between">
+    <span>Interactive Machinery Fleet</span>
+    <span style="color:var(--orange)">← Click arrows or drag to slide →</span>
+  </div>
+
+  <div class="slider-container">
+    <button class="slider-arrow left" onclick="moveSlider(-1)">&#10094;</button>
+    <div class="slider-track" id="equipSlider">
+      <div class="slide-card" onclick="showEquipDetail('jcb')">
+        <img class="slide-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRX3WFF3qpZbvf6h7KxuCBVsG7SChZnGBtHUjrXETk8D6f1yf59lIek7M6P&s=10" alt="JCB">
+        <div style="padding:10px">
+          <div style="display:flex;justify-content:space-between"><span class="equip-name">JCB 3DX</span><span class="avail-badge available" style="position:static">Avail</span></div>
+          <div class="equip-rate">₹1,800/hr</div>
+        </div>
+      </div>
+      <div class="slide-card" onclick="showEquipDetail('excavator')">
+        <img class="slide-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnPAECACoz3SQp20KN_xEq5ntqFqhZv5QdWfBLTMTqLh-DETN_3i0M0sA&s=10" alt="Excavator">
+        <div style="padding:10px">
+          <div style="display:flex;justify-content:space-between"><span class="equip-name">Excavator 20T</span><span class="avail-badge available" style="position:static">Avail</span></div>
+          <div class="equip-rate">₹2,200/hr</div>
+        </div>
+      </div>
+      <div class="slide-card" onclick="showEquipDetail('crane')">
+        <img class="slide-img" src="https://thumbs.dreamstime.com/b/tower-crane-series-iii-5737091.jpg" alt="Tower Crane">
+        <div style="padding:10px">
+          <div style="display:flex;justify-content:space-between"><span class="equip-name">Tower Crane 50T</span><span class="avail-badge available" style="position:static">Avail</span></div>
+          <div class="equip-rate">₹4,500/hr</div>
+        </div>
+      </div>
+      <div class="slide-card" onclick="showEquipDetail('miningcomp')">
+        <img class="slide-img" src="https://www.dminingwell.com/drillingmachinery/wp-content/uploads/2022/05/HGS14-18-screw-air-compressor-2.jpg" alt="Mining Air Compressor">
+        <div style="padding:10px">
+          <div style="display:flex;justify-content:space-between"><span class="equip-name">Mining Compressor</span><span class="avail-badge available" style="position:static">Avail</span></div>
+          <div class="equip-rate">₹900/hr</div>
+        </div>
+      </div>
+      <div class="slide-card" onclick="showEquipDetail('roller')">
+        <img class="slide-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIZ13MDHrH8cImxuzBcErybP9RceGiSMJayN2s1gR5RFLDiKKbor2L96k&s=10" alt="Road Roller">
+        <div style="padding:10px">
+          <div style="display:flex;justify-content:space-between"><span class="equip-name">Road Roller 10T</span><span class="avail-badge available" style="position:static">Avail</span></div>
+          <div class="equip-rate">₹1,500/hr</div>
+        </div>
+      </div>
+      <div class="slide-card" onclick="showEquipDetail('tractorcomp')">
+        <img class="slide-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzPygb3afqmUOfkFbOmOc_ooJ8R8EPbLE4wFxzkFXe2tXEbAROabF_kuw&s=10" alt="Tractor Compressor">
+        <div style="padding:10px">
+          <div style="display:flex;justify-content:space-between"><span class="equip-name">Tractor Mtd Comp.</span><span class="avail-badge available" style="position:static">Avail</span></div>
+          <div class="equip-rate">₹1,200/hr</div>
+        </div>
+      </div>
+    </div>
+    <button class="slider-arrow right" onclick="moveSlider(1)">&#10095;</button>
+  </div>
+
+  <div class="grid3">
+    <div class="stat-card orange"><div class="stat-num">47+</div><div class="stat-label">Fleet size</div></div>
+    <div class="stat-card blue"><div class="stat-num">320+</div><div class="stat-label">Projects completed</div></div>
+    <div class="stat-card green"><div class="stat-num">98%</div><div class="stat-label">On-time delivery</div></div>
+  </div>
+</div>
+
+<div id="page-equip-detail" class="page">
+  <div class="back-btn" onclick="showPage('catalog',document.querySelectorAll('#public-nav .pill')[1])">← Back to machinery catalog</div>
+  <div id="detail-content"></div>
+</div>
+
+<div id="page-catalog" class="page">
+  <div class="section-header">
+    <div class="section-title">Heavy Machinery Catalog</div>
+    <select style="width:160px" onchange="filterCatalogLedger(this.value)">
+      <option value="all">All Categories</option>
+      <option value="earthmoving">Earthmoving</option>
+      <option value="lifting">Lifting & Cranes</option>
+      <option value="drilling">Mining Compressors</option>
+      <option value="road">Road Rollers</option>
+    </select>
+  </div>
+  <div class="grid3" id="catalog-grid">
+    <div class="equip-card cat-item" data-category="earthmoving" onclick="showEquipDetail('jcb')">
+      <div class="equip-img"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRX3WFF3qpZbvf6h7KxuCBVsG7SChZnGBtHUjrXETk8D6f1yf59lIek7M6P&s=10" alt="JCB"><span class="avail-badge available">Available</span></div>
+      <div class="equip-info">
+        <div><div class="equip-name">JCB 3DX Super Backhoe</div><div class="equip-model">2022 · 1.0m³ bucket capacity</div></div>
+        <div style="margin-top:10px"><div class="equip-rate">₹1,800/hr</div><span style="font-size:10px;color:var(--muted)">Standard Tier</span></div>
+      </div>
+    </div>
+    <div class="equip-card cat-item" data-category="earthmoving" onclick="showEquipDetail('excavator')">
+      <div class="equip-img"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnPAECACoz3SQp20KN_xEq5ntqFqhZv5QdWfBLTMTqLh-DETN_3i0M0sA&s=10" alt="Excavator"><span class="avail-badge available">Available</span></div>
+      <div class="equip-info">
+        <div><div class="equip-name">Excavator 20T Tracked</div><div class="equip-model">Komatsu PC200 · 0.8m³ bucket</div></div>
+        <div style="margin-top:10px"><div class="equip-rate">₹2,200/hr</div><span style="font-size:10px;color:var(--muted)">Heavy Earthmoving</span></div>
+      </div>
+    </div>
+    <div class="equip-card cat-item" data-category="lifting" onclick="showEquipDetail('crane')">
+      <div class="equip-img"><img src="https://thumbs.dreamstime.com/b/tower-crane-series-iii-5737091.jpg" alt="Tower Crane"><span class="avail-badge available">Available</span></div>
+      <div class="equip-info">
+        <div><div class="equip-name">Tower Crane 50T</div><div class="equip-model">Liebherr 50 ton · 60m Jib</div></div>
+        <div style="margin-top:10px"><div class="equip-rate">₹4,500/hr</div><span style="font-size:10px;color:var(--muted)">High Rise Special</span></div>
+      </div>
+    </div>
+    <div class="equip-card cat-item" data-category="drilling" onclick="showEquipDetail('miningcomp')">
+      <div class="equip-img"><img src="https://www.dminingwell.com/drillingmachinery/wp-content/uploads/2022/05/HGS14-18-screw-air-compressor-2.jpg" alt="Mining Compressor"><span class="avail-badge available">Available</span></div>
+      <div class="equip-info">
+        <div><div class="equip-name">Mining Air Compressor</div><div class="equip-model">Dminingwell Screw Unit</div></div>
+        <div style="margin-top:10px"><div class="equip-rate">₹900/hr</div><span style="font-size:10px;color:var(--muted)">High Pressure Bore</span></div>
+      </div>
+    </div>
+    <div class="equip-card cat-item" data-category="drilling" onclick="showEquipDetail('tractorcomp')">
+      <div class="equip-img"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzPygb3afqmUOfkFbOmOc_ooJ8R8EPbLE4wFxzkFXe2tXEbAROabF_kuw&s=10" alt="Tractor Compressor"><span class="avail-badge available">Available</span></div>
+      <div class="equip-info">
+        <div><div class="equip-name">Tractor Mounted Compressor</div><div class="equip-model">Heavy Duty Mobile Rig</div></div>
+        <div style="margin-top:10px"><div class="equip-rate">₹1,200/hr</div><span style="font-size:10px;color:var(--muted)">Rough Terrain</span></div>
+      </div>
+    </div>
+    <div class="equip-card cat-item" data-category="road" onclick="showEquipDetail('roller')">
+      <div class="equip-img"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIZ13MDHrH8cImxuzBcErybP9RceGiSMJayN2s1gR5RFLDiKKbor2L96k&s=10" alt="Road Roller"><span class="avail-badge available">Available</span></div>
+      <div class="equip-info">
+        <div><div class="equip-name">Road Roller 10T</div><div class="equip-model">Vibratory Soil Compactor</div></div>
+        <div style="margin-top:10px"><div class="equip-rate">₹1,500/hr</div><span style="font-size:10px;color:var(--muted)">Asphalt & Base</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="page-labor" class="page">
+  <div class="section-header"><div class="section-title">Verified Operators & Site Labor</div></div>
+  <div style="background:var(--orange-light);border-radius:var(--border-radius-md);padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--orange-dark)">
+    ℹ All operators hold valid statutory licenses and background checks. Billed per 8-hour shift.
+  </div>
+  <div class="grid2">
+    <div class="labor-card"><div class="avatar">🚜</div><div style="flex:1"><div class="name">JCB 3DX Operator</div><div style="font-size:11px;color:var(--muted)">Heavy License</div></div><div style="color:var(--orange);font-weight:600">₹1,200/day</div><button class="btn-sm orange" onclick="routeToQuoteWithSelection('JCB 3DX Backhoe')">Book</button></div>
+    <div class="labor-card"><div class="avatar">🏗</div><div style="flex:1"><div class="name">Tower Crane Operator</div><div style="font-size:11px;color:var(--muted)">DGMS Certified</div></div><div style="color:var(--orange);font-weight:600">₹1,800/day</div><button class="btn-sm orange" onclick="routeToQuoteWithSelection('Tower Crane 50T')">Book</button></div>
+    <div class="labor-card"><div class="avatar">⚙️</div><div style="flex:1"><div class="name">Mining Compressor Tech</div><div style="font-size:11px;color:var(--muted)">Drill Specialist</div></div><div style="color:var(--orange);font-weight:600">₹1,000/day</div><button class="btn-sm orange" onclick="routeToQuoteWithSelection('Mining Air Compressor')">Book</button></div>
+    <div class="labor-card"><div class="avatar">👷</div><div style="flex:1"><div class="name">General Site Helper</div><div style="font-size:11px;color:var(--muted)">Manual Rigging</div></div><div style="color:var(--orange);font-weight:600">₹600/day</div><button class="btn-sm orange" onclick="routeToQuoteWithSelection('Road Roller 10T')">Book</button></div>
+  </div>
+</div>
+
+<div id="page-packages" class="page">
+  <div class="section-title">Monthly Rental Packages</div>
+  <div class="grid4">
+    <div class="pkg-card"><div><div class="pkg-duration">1 Month SLA</div><div class="pkg-price">₹2.8L</div><ul class="pkg-features"><li>JCB or Compressor</li><li>1 free yard service</li><li>Standard backup</li></ul></div><button class="btn-sm orange" onclick="smartPackagePreFill('1 Month', 30)">Select Plan</button></div>
+    <div class="pkg-card featured"><div><div style="font-size:10px;background:var(--orange);color:#fff;padding:2px 8px;border-radius:10px;display:inline-block;margin-bottom:6px">Popular</div><div class="pkg-duration">3 Months SLA</div><div class="pkg-price">₹2.5L<span style="font-size:12px;color:var(--muted)">/mo</span></div><ul class="pkg-features"><li>Dedicated Operator</li><li>Priority 6h SLA</li><li>Save ₹90k overall</li></ul></div><button class="btn-primary" onclick="smartPackagePreFill('3 Months', 90)">Select Plan</button></div>
+    <div class="pkg-card"><div><div class="pkg-duration">6 Months SLA</div><div class="pkg-price">₹2.2L<span style="font-size:12px;color:var(--muted)">/mo</span></div><ul class="pkg-features"><li>Zero transport fee</li><li>Instant machine swap</li><li>Full maintenance</li></ul></div><button class="btn-sm orange" onclick="smartPackagePreFill('6 Months', 180)">Select Plan</button></div>
+    <div class="pkg-card"><div><div class="pkg-duration">12 Months SLA</div><div class="pkg-price">₹1.9L<span style="font-size:12px;color:var(--muted)">/mo</span></div><ul class="pkg-features"><li>Custom fleet mix</li><li>Dedicated site tech</li><li>Fixed price lock</li></ul></div><button class="btn-sm orange" onclick="smartPackagePreFill('12 Months', 365)">Select Plan</button></div>
+  </div>
+</div>
+
+<div id="page-quote" class="page">
+  <div class="section-title">Reserve Equipment (Live DB Writer)</div>
+  <div class="grid2">
+    <div class="card">
+      <div style="font-size:12px;font-weight:500;margin-bottom:10px">Contract Parameters</div>
+      <div class="form-group"><label>Selected Model</label>
+        <select id="b-equip">
+          <option value="JCB 3DX Backhoe">JCB 3DX Backhoe</option>
+          <option value="Excavator 20T">Excavator 20T</option>
+          <option value="Tower Crane 50T">Tower Crane 50T</option>
+          <option value="Mining Air Compressor">Mining Air Compressor</option>
+          <option value="Tractor Mounted Compressor">Tractor Mounted Compressor</option>
+          <option value="Road Roller 10T">Road Roller 10T</option>
+        </select>
+      </div>
+      <div class="grid2">
+        <div class="form-group"><label>Start Date</label><input type="date" id="b-start"></div>
+        <div class="form-group"><label>End Date</label><input type="date" id="b-end"></div>
+      </div>
+      <div class="form-group"><label>Client / Organization Name</label><input type="text" id="b-company" placeholder="e.g. Shapoorji Pallonji · Sai Infra"></div>
+      <div class="form-group"><label>Site Address</label><textarea id="b-address" rows="2" placeholder="Plot 12, Financial District, Hyderabad..."></textarea></div>
+      <button class="btn-primary" style="margin-top:6px" onclick="processNewBooking()">Commit Booking to Ledger</button>
+    </div>
+    <div class="card" style="background:var(--steel-light)">
+      <div style="font-size:13px;font-weight:600;color:var(--steel);margin-bottom:8px">State Machine active</div>
+      <p style="font-size:12px;color:var(--ink);line-height:1.6">
+        Submitting this form pushes an immutable JSON record into your browser's persistent session storage. It will instantly render a client tracking ticket under <strong>My Bookings</strong> and alert the <strong>Admin Panel</strong>.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div id="page-mybookings" class="page">
+  <div class="section-header">
+    <div class="section-title">My Active Site Dispatches</div>
+    <button class="btn-sm orange" onclick="showPage('quote',document.querySelectorAll('#public-nav .pill')[4])">+ Request New Rig</button>
+  </div>
+  <div id="client-bookings-list"></div>
+</div>
+
+<div id="page-about" class="page">
+  <div class="section-title">About HeavyHire Infrastructure</div>
+  <div class="card" style="margin-bottom:16px;line-height:1.7;color:var(--muted)">
+    HeavyHire is Hyderabad's premier heavy machinery bank. Operating out of our primary staging yard in Banjawadi, we guarantee fully tested, certified earthmoving, lifting, and high-pressure mining equipment delivered to any site in Telangana within 6 hours.
+  </div>
+  <div style="text-align:center;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:8px">
+    <div style="font-size:16px;font-weight:500;margin-bottom:10px">Ready to deploy machinery to your site?</div>
+    <button class="btn-primary" style="max-width:240px" onclick="showPage('catalog',document.querySelectorAll('#public-nav .pill')[1])">Browse Available Fleet</button>
+  </div>
+</div>
+
+<div id="page-contact" class="page">
+  <div class="section-title">Dispatch Yard Contact</div>
+  <div class="grid2" style="margin-bottom:16px">
+    <div class="contact-card" onclick="triggerWhatsApp('Hi Ram, I need an immediate equipment dispatch')" style="cursor:pointer">
+      <div style="font-size:24px">💬</div><div><div style="font-weight:600">WhatsApp Dispatch</div><div style="color:var(--orange)">+91 8688883489</div><div style="font-size:11px;color:var(--muted)">Instant response desk</div></div>
+    </div>
+    <div class="contact-card" onclick="window.location.href='mailto:ramorsu293@gmail.com'" style="cursor:pointer">
+      <div style="font-size:24px">✉️</div><div><div style="font-weight:600">Email Dispatcher</div><div style="color:var(--steel)">ramorsu293@gmail.com</div><div style="font-size:11px;color:var(--muted)">Official PO submission</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div style="font-weight:600;margin-bottom:4px">Central Yard Address</div>
+    <div style="color:var(--muted)">13-6-839/6/1 , Banjawadi, Hyderabad - 500006</div>
+  </div>
+</div>
+
+<div id="page-bookings_admin" class="page" style="display:none">
+  <div class="section-header">
+    <div class="section-title">Live Dispatch Database</div>
+    <button class="btn-sm red" onclick="clearEntireDB()">Wipe Database</button>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>Client Org</th><th>Rig Type</th><th>Rental Window</th><th>Site Address</th><th>State</th><th>Actions</th></tr></thead>
+      <tbody id="admin-bookings-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="page-inventory" class="page" style="display:none">
+  <div class="section-header">
+    <div class="section-title">Master Fleet Ledger</div>
+    <button class="btn-sm orange" onclick="adminAddEquipment()">+ Add Rig</button>
+  </div>
+  <div class="table-wrap">
+    <table id="inv-table-ledger">
+      <thead><tr><th>Code</th><th>Machine Preview</th><th>Model Spec</th><th>Standard Tariff</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>EQ-01</td><td><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRX3WFF3qpZbvf6h7KxuCBVsG7SChZnGBtHUjrXETk8D6f1yf59lIek7M6P&s=10" style="height:24px;width:36px;object-fit:cover;vertical-align:middle;margin-right:6px"> JCB 3DX</td><td>3DX Super</td><td>₹1,800/hr</td><td><span class="status-pill s-active">Ready</span></td></tr>
+        <tr><td>EQ-02</td><td><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnPAECACoz3SQp20KN_xEq5ntqFqhZv5QdWfBLTMTqLh-DETN_3i0M0sA&s=10" style="height:24px;width:36px;object-fit:cover;vertical-align:middle;margin-right:6px"> Excavator</td><td>Komatsu 20T</td><td>₹2,200/hr</td><td><span class="status-pill s-active">Ready</span></td></tr>
+        <tr><td>EQ-03</td><td><img src="https://thumbs.dreamstime.com/b/tower-crane-series-iii-5737091.jpg" style="height:24px;width:36px;object-fit:cover;vertical-align:middle;margin-right:6px"> Tower Crane</td><td>Liebherr 50T</td><td>₹4,500/hr</td><td><span class="status-pill s-active">Ready</span></td></tr>
+        <tr><td>EQ-04</td><td><img src="https://www.dminingwell.com/drillingmachinery/wp-content/uploads/2022/05/HGS14-18-screw-air-compressor-2.jpg" style="height:24px;width:36px;object-fit:cover;vertical-align:middle;margin-right:6px"> Mining Compressor</td><td>Screw Rig</td><td>₹900/hr</td><td><span class="status-pill s-active">Ready</span></td></tr>
+        <tr><td>EQ-05</td><td><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzPygb3afqmUOfkFbOmOc_ooJ8R8EPbLE4wFxzkFXe2tXEbAROabF_kuw&s=10" style="height:24px;width:36px;object-fit:cover;vertical-align:middle;margin-right:6px"> Tractor Compressor</td><td>Mobile Rig</td><td>₹1,200/hr</td><td><span class="status-pill s-active">Ready</span></td></tr>
+        <tr><td>EQ-06</td><td><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIZ13MDHrH8cImxuzBcErybP9RceGiSMJayN2s1gR5RFLDiKKbor2L96k&s=10" style="height:24px;width:36px;object-fit:cover;vertical-align:middle;margin-right:6px"> Road Roller</td><td>10T Vibratory</td><td>₹1,500/hr</td><td><span class="status-pill s-active">Ready</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="page-labor_admin" class="page" style="display:none">
+  <div class="section-header">
+    <div class="section-title">Verified Staging Workforce</div>
+    <button class="btn-sm orange" onclick="adminAddWorker()">+ Register Worker</button>
+  </div>
+  <div class="table-wrap">
+    <table id="labor-table-ledger">
+      <thead><tr><th>ID</th><th>Operator Name</th><th>Primary Rating</th><th>Verification Tag</th><th>State</th></tr></thead>
+      <tbody>
+        <tr><td>LB-01</td><td>Ramesh K.</td><td>JCB 3DX Rig</td><td>[Govt ID Redacted]</td><td><span class="status-pill s-active">Clear</span></td></tr>
+        <tr><td>LB-02</td><td>Suresh M.</td><td>Mining Compressor</td><td>[Govt ID Redacted]</td><td><span class="status-pill s-active">Clear</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div>
+
+<script>
+// LIVE DATABASE ENGINE
+let bookingsDatabase = JSON.parse(localStorage.getItem('hh_live_db_v2')) || [];
+
+function setDefaultDates() {
+  const d = new Date();
+  const startEl = document.getElementById('b-start');
+  const endEl = document.getElementById('b-end');
+  if(startEl && !startEl.value) startEl.valueAsDate = d;
+  if(endEl && !endEl.value) {
+    const d2 = new Date(d);
+    d2.setDate(d2.getDate() + 14);
+    endEl.valueAsDate = d2;
+  }
+}
+
+function syncDatabases() {
+  const adminBody = document.getElementById('admin-bookings-tbody');
+  const clientBody = document.getElementById('client-bookings-list');
+  adminBody.innerHTML = ''; clientBody.innerHTML = '';
+
+  if(bookingsDatabase.length === 0) {
+    adminBody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted)">Database empty. Client portal submissions will write to this table instantly.</td></tr>`;
+    clientBody.innerHTML = `<div class="card" style="text-align:center;padding:24px;color:var(--muted)">You have no active equipment requests. Click 'Get Quote' to schedule machinery.</div>`;
+    return;
+  }
+
+  bookingsDatabase.forEach(item => {
+    adminBody.innerHTML += `
+      <tr>
+        <td><strong style="color:var(--orange)">${item.id}</strong></td>
+        <td><strong>${item.company}</strong></td>
+        <td>${item.equipment}</td>
+        <td>${item.startDate} – ${item.endDate}</td>
+        <td>${item.address}</td>
+        <td><span class="status-pill ${item.status==='Confirmed'?'s-active':'s-pending'}">${item.status}</span></td>
+        <td>
+          <button class="btn-sm orange" onclick="adminMutateStatus('${item.id}','Confirmed')">Confirm</button>
+          <button class="btn-sm" onclick="adminDeleteRecord('${item.id}')">Drop</button>
+        </td>
+      </tr>
+    `;
+
+    clientBody.innerHTML += `
+      <div class="my-booking-card">
+        <div class="mb-header">
+          <div><div class="mb-id">${item.id}</div><div style="font-size:15px;font-weight:600;color:var(--ink)">${item.equipment}</div></div>
+          <span class="status-pill ${item.status==='Confirmed'?'s-active':'s-pending'}">${item.status}</span>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin:6px 0">📅 Window: ${item.startDate} to ${item.endDate}</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px">📍 Delivered to: ${item.address}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px">Client: <strong>${item.company}</strong></span>
+          <button class="wapp-btn" onclick="triggerWhatsApp('Enquiring status of order ticket: ${item.id}')">Live WhatsApp Support</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function processNewBooking() {
+  const equipment = document.getElementById('b-equip').value;
+  const startDate = document.getElementById('b-start').value;
+  const endDate = document.getElementById('b-end').value;
+  const company = document.getElementById('b-company').value || "Independent Builder";
+  const address = document.getElementById('b-address').value || "Hyderabad Metro Territory";
+
+  const genId = 'BK-' + Math.floor(100000 + Math.random() * 900000);
+  bookingsDatabase.push({ id: genId, equipment, startDate, endDate, company, address, status: 'Reviewing' });
+  localStorage.setItem('hh_live_db_v2', JSON.stringify(bookingsDatabase));
+
+  syncDatabases();
+  alert(`DISPATCH TICKET CREATED!\n\nTicket ID: [${genId}]\nRig: ${equipment}\n\nRouting you to 'My Bookings' to track your dispatch.`);
+  showPage('mybookings', document.querySelectorAll('#public-nav .pill')[5]);
+}
+
+function adminMutateStatus(id, st) {
+  let target = bookingsDatabase.find(x => x.id === id);
+  if(target) { target.status = st; localStorage.setItem('hh_live_db_v2', JSON.stringify(bookingsDatabase)); syncDatabases(); }
+}
+function adminDeleteRecord(id) {
+  bookingsDatabase = bookingsDatabase.filter(x => x.id !== id);
+  localStorage.setItem('hh_live_db_v2', JSON.stringify(bookingsDatabase)); syncDatabases();
+}
+function clearEntireDB() {
+  if(confirm("DANGER: Wipe all active client orders?")) { bookingsDatabase=[]; localStorage.removeItem('hh_live_db_v2'); syncDatabases(); }
+}
+
+// SMART LINK BUTTON ROUTERS
+function routeToQuoteWithSelection(targetMachine) {
+  showPage('quote', document.querySelectorAll('#public-nav .pill')[4]);
+  const dropdown = document.getElementById('b-equip');
+  if(dropdown) dropdown.value = targetMachine;
+}
+
+function smartPackagePreFill(packageName, addedDays) {
+  showPage('quote', document.querySelectorAll('#public-nav .pill')[4]);
+  const start = new Date();
+  const end = new Date();
+  end.setDate(start.getDate() + addedDays);
+  
+  document.getElementById('b-start').valueAsDate = start;
+  document.getElementById('b-end').valueAsDate = end;
+  alert(`Triggered ${packageName} package! Checkout dates have been automatically advanced by ${addedDays} days.`);
+}
+
+function filterCatalogLedger(category) {
+  const cards = document.querySelectorAll('#catalog-grid .cat-item');
+  cards.forEach(card => {
+    if(category === 'all' || card.dataset.category === category) card.style.display = 'flex';
+    else card.style.display = 'none';
+  });
+}
+
+function adminAddEquipment() {
+  const model = prompt("Enter new Rig description (e.g. Tata Hitachi 20T):");
+  if(!model) return;
+  const rate = prompt("Enter hourly rate (e.g. ₹2,400/hr):");
+  document.querySelector('#inv-table-ledger tbody').innerHTML += `<tr><td>EQ-07</td><td>🚜 ${model}</td><td>Custom Staged</td><td>${rate||'₹1,800/hr'}</td><td><span class="status-pill s-active">Ready</span></td></tr>`;
+}
+
+function adminAddWorker() {
+  const name = prompt("Enter Operator Name:");
+  if(!name) return;
+  const rig = prompt("Assign rig expertise (e.g. Tower Crane):");
+  document.querySelector('#labor-table-ledger tbody').innerHTML += `<tr><td>LB-03</td><td>${name}</td><td>${rig||'General Rig'}</td><td>[Govt ID Redacted]</td><td><span class="status-pill s-active">Clear</span></td></tr>`;
+}
+
+function setMode(m, el) {
+  if(m === 'admin') { if(prompt("Enter Admin Passkey (try: admin123)") !== "admin123") { alert("Access Denied."); return; } }
+  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active')); el.classList.add('active');
+  document.getElementById('public-nav').style.display = m==='public'?'flex':'none';
+  document.getElementById('admin-nav').style.display = m==='admin'?'flex':'none';
+  if(m==='public') showPage('home', document.querySelector('#public-nav .pill'));
+  else showAdminPage('bookings_admin', document.querySelector('#admin-nav .pill'));
+}
+
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => { p.style.display='none'; p.classList.remove('active') });
+  document.querySelectorAll('#public-nav .pill').forEach(p => p.classList.remove('active'));
+  const pg = document.getElementById('page-'+id); if(pg) { pg.style.display='block'; pg.classList.add('active'); }
+  if(el) el.classList.add('active');
+}
+function showAdminPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => { p.style.display='none'; p.classList.remove('active') });
+  document.querySelectorAll('#admin-nav .pill').forEach(p => p.classList.remove('active'));
+  const pg = document.getElementById('page-'+id); if(pg) { pg.style.display='block'; pg.classList.add('active'); }
+  if(el) el.classList.add('active');
+}
+
+function moveSlider(dir) { document.getElementById('equipSlider').scrollBy({ left: dir * 242, behavior: 'smooth' }); }
+function triggerWhatsApp(m) { window.open(`https://wa.me/918688883489?text=${encodeURIComponent(m)}`, '_blank'); }
+
+function showEquipDetail(k) {
+  const dict = {
+    jcb: { name:'JCB 3DX Super Backhoe', img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRX3WFF3qpZbvf6h7KxuCBVsG7SChZnGBtHUjrXETk8D6f1yf59lIek7M6P&s=10', rate:'₹1,800/hr', opt:'JCB 3DX Backhoe'},
+    excavator: { name:'Komatsu 20T Tracked Excavator', img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnPAECACoz3SQp20KN_xEq5ntqFqhZv5QdWfBLTMTqLh-DETN_3i0M0sA&s=10', rate:'₹2,200/hr', opt:'Excavator 20T'},
+    crane: { name:'Liebherr 50T Tower Crane', img:'https://thumbs.dreamstime.com/b/tower-crane-series-iii-5737091.jpg', rate:'₹4,500/hr', opt:'Tower Crane 50T'},
+    miningcomp: { name:'Dminingwell Mining Compressor', img:'https://www.dminingwell.com/drillingmachinery/wp-content/uploads/2022/05/HGS14-18-screw-air-compressor-2.jpg', rate:'₹900/hr', opt:'Mining Air Compressor'},
+    roller: { name:'10T Vibratory Road Roller', img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIZ13MDHrH8cImxuzBcErybP9RceGiSMJayN2s1gR5RFLDiKKbor2L96k&s=10', rate:'₹1,500/hr', opt:'Road Roller 10T'},
+    tractorcomp: { name:'Tractor Mounted Compressor', img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzPygb3afqmUOfkFbOmOc_ooJ8R8EPbLE4wFxzkFXe2tXEbAROabF_kuw&s=10', rate:'₹1,200/hr', opt:'Tractor Mounted Compressor'}
+  };
+  const item = dict[k]; if(!item) return;
+  
+  // Replaced static 260px height with responsive 16/9 cinematic aspect ratio
+  document.getElementById('detail-content').innerHTML = `
+    <div style="width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;margin-bottom:16px;background:#111;border:1px solid var(--border)"><img src="${item.img}" style="width:100%;height:100%;object-fit:cover"></div>
+    <div style="font-size:22px;font-weight:600;color:var(--ink)">${item.name}</div>
+    <div style="font-size:18px;color:var(--orange);font-weight:bold;margin:10px 0">${item.rate} <span style="font-size:12px;color:var(--muted);font-weight:normal">(Operator included)</span></div>
+    <div style="margin:16px 0;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--muted)">
+      Includes same-day site transport mobilization within Hyderabad municipal limits, certified operator, and instant breakdown replacement guarantee.
+    </div>
+    <button class="btn-primary" onclick="routeToQuoteWithSelection('${item.opt}')">Proceed to Book this Rig</button>
+  `;
+  showPage('equip-detail');
+}
+
+setDefaultDates();
+syncDatabases();
+</script>
