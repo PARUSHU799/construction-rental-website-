@@ -133,10 +133,13 @@ td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:middl
   <div class="pill admin-pill" onclick="showAdminPage('labor_admin',this)">Labor force</div>
 </div>
 
+<!-- ===== PUBLIC PAGES ===== -->
+
+<!-- HOME -->
 <div id="page-home" class="page active">
   <div class="hero">
     <h1>Heavy Equipment Rental<br>for Hyderabad's Builders</h1>
-    <p>JCBs, Excavators, Cranes, and Mining Compressors — daily, monthly or project-based.</p>
+    <p>JCBs, Excavators, Cranes, Dumpers, and Mining Compressors — daily, monthly or project-based.</p>
     <div style="display:flex;gap:10px;max-width:320px">
       <button class="btn-primary" onclick="showPage('catalog',document.querySelectorAll('#public-nav .pill')[1])">Explore Fleet</button>
       <button class="btn-outline" onclick="showPage('quote',document.querySelectorAll('#public-nav .pill')[4])">Instant Quote</button>
@@ -148,6 +151,7 @@ td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:middl
     <span style="color:var(--orange)">← Click arrows or drag to slide →</span>
   </div>
 
+  <!-- MOVABLE IMAGE SLIDER SECTION -->
   <div class="slider-container">
     <button class="slider-arrow left" onclick="moveSlider(-1)">&#10094;</button>
     <div class="slider-track" id="equipSlider">
@@ -163,6 +167,13 @@ td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:middl
         <div style="padding:10px">
           <div style="display:flex;justify-content:space-between"><span class="equip-name">Excavator 20T</span><span class="avail-badge available" style="position:static">Avail</span></div>
           <div class="equip-rate">₹2,200/hr</div>
+        </div>
+      </div>
+      <div class="slide-card" onclick="showEquipDetail('dumper')">
+        <img class="slide-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSjJWZphVkRtZfHABqkKoWNbE-WSP0MLtsLWEc44RR_kuyAFH-yuKfk6eO&s=10" alt="Dumper Truck">
+        <div style="padding:10px">
+          <div style="display:flex;justify-content:space-between"><span class="equip-name">Tipper Dumper</span><span class="avail-badge available" style="position:static">Avail</span></div>
+          <div class="equip-rate" style="font-size:12px;">Trip Basis</div>
         </div>
       </div>
       <div class="slide-card" onclick="showEquipDetail('crane')">
@@ -204,17 +215,20 @@ td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:middl
   </div>
 </div>
 
+<!-- EQUIPMENT DETAIL -->
 <div id="page-equip-detail" class="page">
   <div class="back-btn" onclick="showPage('catalog',document.querySelectorAll('#public-nav .pill')[1])">← Back to machinery catalog</div>
   <div id="detail-content"></div>
 </div>
 
+<!-- CATALOG (WITH PRO SIZING & LIVE FILTER) -->
 <div id="page-catalog" class="page">
   <div class="section-header">
     <div class="section-title">Heavy Machinery Catalog</div>
     <select style="width:160px" onchange="filterCatalogLedger(this.value)">
       <option value="all">All Categories</option>
       <option value="earthmoving">Earthmoving</option>
+      <option value="transport">Transport & Haulage</option>
       <option value="lifting">Lifting & Cranes</option>
       <option value="drilling">Mining Compressors</option>
       <option value="road">Road Rollers</option>
@@ -233,6 +247,13 @@ td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:middl
       <div class="equip-info">
         <div><div class="equip-name">Excavator 20T Tracked</div><div class="equip-model">Komatsu PC200 · 0.8m³ bucket</div></div>
         <div style="margin-top:10px"><div class="equip-rate">₹2,200/hr</div><span style="font-size:10px;color:var(--muted)">Heavy Earthmoving</span></div>
+      </div>
+    </div>
+    <div class="equip-card cat-item" data-category="transport" onclick="showEquipDetail('dumper')">
+      <div class="equip-img"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSjJWZphVkRtZfHABqkKoWNbE-WSP0MLtsLWEc44RR_kuyAFH-yuKfk6eO&s=10" alt="Dumper Truck"><span class="avail-badge available">Available</span></div>
+      <div class="equip-info">
+        <div><div class="equip-name">Volvo 20T Tipper Dumper</div><div class="equip-model">Material Transport</div></div>
+        <div style="margin-top:10px"><div class="equip-rate">Trip Basis</div><span style="font-size:10px;color:var(--muted)">Depends on distance & material</span></div>
       </div>
     </div>
     <div class="equip-card cat-item" data-category="lifting" onclick="showEquipDetail('crane')">
@@ -266,6 +287,7 @@ td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:middl
   </div>
 </div>
 
+<!-- LABOR PAGE -->
 <div id="page-labor" class="page">
   <div class="section-header"><div class="section-title">Verified Operators & Site Labor</div></div>
   <div style="background:var(--orange-light);border-radius:var(--border-radius-md);padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--orange-dark)">
@@ -273,12 +295,13 @@ td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:middl
   </div>
   <div class="grid2">
     <div class="labor-card"><div class="avatar">🚜</div><div style="flex:1"><div class="name">JCB 3DX Operator</div><div style="font-size:11px;color:var(--muted)">Heavy License</div></div><div style="color:var(--orange);font-weight:600">₹1,200/day</div><button class="btn-sm orange" onclick="routeToQuoteWithSelection('JCB 3DX Backhoe')">Book</button></div>
+    <div class="labor-card"><div class="avatar">🚚</div><div style="flex:1"><div class="name">Dumper Truck Driver</div><div style="font-size:11px;color:var(--muted)">Heavy Transport Tag</div></div><div style="color:var(--orange);font-weight:600">₹1,000/day</div><button class="btn-sm orange" onclick="routeToQuoteWithSelection('Volvo 20T Tipper Dumper')">Book</button></div>
     <div class="labor-card"><div class="avatar">🏗</div><div style="flex:1"><div class="name">Tower Crane Operator</div><div style="font-size:11px;color:var(--muted)">DGMS Certified</div></div><div style="color:var(--orange);font-weight:600">₹1,800/day</div><button class="btn-sm orange" onclick="routeToQuoteWithSelection('Tower Crane 50T')">Book</button></div>
     <div class="labor-card"><div class="avatar">⚙️</div><div style="flex:1"><div class="name">Mining Compressor Tech</div><div style="font-size:11px;color:var(--muted)">Drill Specialist</div></div><div style="color:var(--orange);font-weight:600">₹1,000/day</div><button class="btn-sm orange" onclick="routeToQuoteWithSelection('Mining Air Compressor')">Book</button></div>
-    <div class="labor-card"><div class="avatar">👷</div><div style="flex:1"><div class="name">General Site Helper</div><div style="font-size:11px;color:var(--muted)">Manual Rigging</div></div><div style="color:var(--orange);font-weight:600">₹600/day</div><button class="btn-sm orange" onclick="routeToQuoteWithSelection('Road Roller 10T')">Book</button></div>
   </div>
 </div>
 
+<!-- PACKAGES -->
 <div id="page-packages" class="page">
   <div class="section-title">Monthly Rental Packages</div>
   <div class="grid4">
@@ -289,6 +312,7 @@ td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:middl
   </div>
 </div>
 
+<!-- QUOTE / BOOKING FORM -->
 <div id="page-quote" class="page">
   <div class="section-title">Reserve Equipment (Live DB Writer)</div>
   <div class="grid2">
@@ -298,6 +322,7 @@ td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:middl
         <select id="b-equip">
           <option value="JCB 3DX Backhoe">JCB 3DX Backhoe</option>
           <option value="Excavator 20T">Excavator 20T</option>
+          <option value="Volvo 20T Tipper Dumper">Volvo 20T Tipper Dumper</option>
           <option value="Tower Crane 50T">Tower Crane 50T</option>
           <option value="Mining Air Compressor">Mining Air Compressor</option>
           <option value="Tractor Mounted Compressor">Tractor Mounted Compressor</option>
@@ -321,6 +346,7 @@ td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:middl
   </div>
 </div>
 
+<!-- MY BOOKINGS -->
 <div id="page-mybookings" class="page">
   <div class="section-header">
     <div class="section-title">My Active Site Dispatches</div>
@@ -329,6 +355,7 @@ td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:middl
   <div id="client-bookings-list"></div>
 </div>
 
+<!-- ABOUT -->
 <div id="page-about" class="page">
   <div class="section-title">About HeavyHire Infrastructure</div>
   <div class="card" style="margin-bottom:16px;line-height:1.7;color:var(--muted)">
@@ -340,6 +367,7 @@ td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:middl
   </div>
 </div>
 
+<!-- CONTACT -->
 <div id="page-contact" class="page">
   <div class="section-title">Dispatch Yard Contact</div>
   <div class="grid2" style="margin-bottom:16px">
@@ -356,6 +384,9 @@ td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:middl
   </div>
 </div>
 
+<!-- ===== ADMIN PAGES ===== -->
+
+<!-- LIVE BOOKINGS (ADMIN) -->
 <div id="page-bookings_admin" class="page" style="display:none">
   <div class="section-header">
     <div class="section-title">Live Dispatch Database</div>
@@ -369,6 +400,7 @@ td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:middl
   </div>
 </div>
 
+<!-- ADMIN INVENTORY -->
 <div id="page-inventory" class="page" style="display:none">
   <div class="section-header">
     <div class="section-title">Master Fleet Ledger</div>
@@ -384,11 +416,13 @@ td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:middl
         <tr><td>EQ-04</td><td><img src="https://www.dminingwell.com/drillingmachinery/wp-content/uploads/2022/05/HGS14-18-screw-air-compressor-2.jpg" style="height:24px;width:36px;object-fit:cover;vertical-align:middle;margin-right:6px"> Mining Compressor</td><td>Screw Rig</td><td>₹900/hr</td><td><span class="status-pill s-active">Ready</span></td></tr>
         <tr><td>EQ-05</td><td><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTzPygb3afqmUOfkFbOmOc_ooJ8R8EPbLE4wFxzkFXe2tXEbAROabF_kuw&s=10" style="height:24px;width:36px;object-fit:cover;vertical-align:middle;margin-right:6px"> Tractor Compressor</td><td>Mobile Rig</td><td>₹1,200/hr</td><td><span class="status-pill s-active">Ready</span></td></tr>
         <tr><td>EQ-06</td><td><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIZ13MDHrH8cImxuzBcErybP9RceGiSMJayN2s1gR5RFLDiKKbor2L96k&s=10" style="height:24px;width:36px;object-fit:cover;vertical-align:middle;margin-right:6px"> Road Roller</td><td>10T Vibratory</td><td>₹1,500/hr</td><td><span class="status-pill s-active">Ready</span></td></tr>
+        <tr><td>EQ-07</td><td><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSjJWZphVkRtZfHABqkKoWNbE-WSP0MLtsLWEc44RR_kuyAFH-yuKfk6eO&s=10" style="height:24px;width:36px;object-fit:cover;vertical-align:middle;margin-right:6px"> Tipper Dumper</td><td>Volvo 20T</td><td>Trip Basis</td><td><span class="status-pill s-active">Ready</span></td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
+<!-- LABOR ADMIN -->
 <div id="page-labor_admin" class="page" style="display:none">
   <div class="section-header">
     <div class="section-title">Verified Staging Workforce</div>
@@ -400,6 +434,7 @@ td{padding:8px 10px;border-bottom:0.5px solid var(--border);vertical-align:middl
       <tbody>
         <tr><td>LB-01</td><td>Ramesh K.</td><td>JCB 3DX Rig</td><td>[Govt ID Redacted]</td><td><span class="status-pill s-active">Clear</span></td></tr>
         <tr><td>LB-02</td><td>Suresh M.</td><td>Mining Compressor</td><td>[Govt ID Redacted]</td><td><span class="status-pill s-active">Clear</span></td></tr>
+        <tr><td>LB-03</td><td>Mohammed A.</td><td>Dumper Truck</td><td>[Govt ID Redacted]</td><td><span class="status-pill s-active">Clear</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -525,14 +560,14 @@ function adminAddEquipment() {
   const model = prompt("Enter new Rig description (e.g. Tata Hitachi 20T):");
   if(!model) return;
   const rate = prompt("Enter hourly rate (e.g. ₹2,400/hr):");
-  document.querySelector('#inv-table-ledger tbody').innerHTML += `<tr><td>EQ-07</td><td>🚜 ${model}</td><td>Custom Staged</td><td>${rate||'₹1,800/hr'}</td><td><span class="status-pill s-active">Ready</span></td></tr>`;
+  document.querySelector('#inv-table-ledger tbody').innerHTML += `<tr><td>EQ-08</td><td>🚜 ${model}</td><td>Custom Staged</td><td>${rate||'₹1,800/hr'}</td><td><span class="status-pill s-active">Ready</span></td></tr>`;
 }
 
 function adminAddWorker() {
   const name = prompt("Enter Operator Name:");
   if(!name) return;
   const rig = prompt("Assign rig expertise (e.g. Tower Crane):");
-  document.querySelector('#labor-table-ledger tbody').innerHTML += `<tr><td>LB-03</td><td>${name}</td><td>${rig||'General Rig'}</td><td>[Govt ID Redacted]</td><td><span class="status-pill s-active">Clear</span></td></tr>`;
+  document.querySelector('#labor-table-ledger tbody').innerHTML += `<tr><td>LB-04</td><td>${name}</td><td>${rig||'General Rig'}</td><td>[Govt ID Redacted]</td><td><span class="status-pill s-active">Clear</span></td></tr>`;
 }
 
 function setMode(m, el) {
@@ -564,6 +599,7 @@ function showEquipDetail(k) {
   const dict = {
     jcb: { name:'JCB 3DX Super Backhoe', img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRX3WFF3qpZbvf6h7KxuCBVsG7SChZnGBtHUjrXETk8D6f1yf59lIek7M6P&s=10', rate:'₹1,800/hr', opt:'JCB 3DX Backhoe'},
     excavator: { name:'Komatsu 20T Tracked Excavator', img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnPAECACoz3SQp20KN_xEq5ntqFqhZv5QdWfBLTMTqLh-DETN_3i0M0sA&s=10', rate:'₹2,200/hr', opt:'Excavator 20T'},
+    dumper: { name:'Volvo 20T Tipper Dumper', img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSjJWZphVkRtZfHABqkKoWNbE-WSP0MLtsLWEc44RR_kuyAFH-yuKfk6eO&s=10', rate:'Trip Basis', opt:'Volvo 20T Tipper Dumper'},
     crane: { name:'Liebherr 50T Tower Crane', img:'https://thumbs.dreamstime.com/b/tower-crane-series-iii-5737091.jpg', rate:'₹4,500/hr', opt:'Tower Crane 50T'},
     miningcomp: { name:'Dminingwell Mining Compressor', img:'https://www.dminingwell.com/drillingmachinery/wp-content/uploads/2022/05/HGS14-18-screw-air-compressor-2.jpg', rate:'₹900/hr', opt:'Mining Air Compressor'},
     roller: { name:'10T Vibratory Road Roller', img:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIZ13MDHrH8cImxuzBcErybP9RceGiSMJayN2s1gR5RFLDiKKbor2L96k&s=10', rate:'₹1,500/hr', opt:'Road Roller 10T'},
@@ -571,11 +607,14 @@ function showEquipDetail(k) {
   };
   const item = dict[k]; if(!item) return;
   
+  // Dumper has custom text for pricing description
+  let rateSubtext = (k === 'dumper') ? "(Rate depends on distance & material)" : "(Operator included)";
+  
   // Replaced static 260px height with responsive 16/9 cinematic aspect ratio
   document.getElementById('detail-content').innerHTML = `
     <div style="width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;margin-bottom:16px;background:#111;border:1px solid var(--border)"><img src="${item.img}" style="width:100%;height:100%;object-fit:cover"></div>
     <div style="font-size:22px;font-weight:600;color:var(--ink)">${item.name}</div>
-    <div style="font-size:18px;color:var(--orange);font-weight:bold;margin:10px 0">${item.rate} <span style="font-size:12px;color:var(--muted);font-weight:normal">(Operator included)</span></div>
+    <div style="font-size:18px;color:var(--orange);font-weight:bold;margin:10px 0">${item.rate} <span style="font-size:12px;color:var(--muted);font-weight:normal">${rateSubtext}</span></div>
     <div style="margin:16px 0;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:6px;font-size:12px;color:var(--muted)">
       Includes same-day site transport mobilization within Hyderabad municipal limits, certified operator, and instant breakdown replacement guarantee.
     </div>
